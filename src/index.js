@@ -49,7 +49,11 @@ const run = async incomingConfig => {
   } catch (error) {
     logger.err("run error", error);
   } finally {
-    closeProcess(0);
+    const runWithDebbuger = !!process.execArgv.find(v => v.startsWith('--inspect'));
+    console.log('runWithDebbuger', runWithDebbuger);
+    if (!runWithDebbuger) {
+      closeProcess(0);
+    }
   }
 };
 
