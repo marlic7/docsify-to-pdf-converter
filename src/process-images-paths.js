@@ -5,7 +5,7 @@ const isUrl = require("is-url");
 const isImg = filePath => {
   const extName = path.parse(filePath).ext;
 
-  return extName === ".jpg" || extName === ".png" || extName === ".gif";
+  return extName === ".jpg" || extName === ".png" || extName === ".gif" || extName === ".svg";
 };
 
 module.exports = ({ pathToStatic, pathToDocsifyEntryPoint }) => ({ content, name }) => {
