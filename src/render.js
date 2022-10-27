@@ -21,9 +21,16 @@ const renderPdf = async ({
   });
   try {
     const mainMdFilenameWithoutExt = path.parse(mainMdFilename).name;
-    const docsifyUrl = `http://localhost:${docsifyRendererPort}/#/${pathToStatic}/${mainMdFilenameWithoutExt}`;
+    const docsifyUrl = `http://127.0.0.1:${docsifyRendererPort}/#/${pathToStatic}/${mainMdFilenameWithoutExt}`;
 
     const page = await browser.newPage();
+
+    page.on('console', msg => {
+      for (let i = 0; i < msg.args().length; ++i) {
+        console.log(`${i}: ${msg.args()[i]}`);
+      }
+    });
+
     // Inject $docsify object from package.json based on provided key.
     await page.evaluateOnNewDocument(x => window.$docsify = x, $docsify[process.argv.slice(2)[0] || "default"]);
     await page.goto(docsifyUrl, { waitUntil: "networkidle0" });
