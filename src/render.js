@@ -10,6 +10,7 @@ const renderPdf = async ({
   pdfOptions,
   docsifyRendererPort,
   emulateMedia,
+  $docsify,
 }) => {
   const browser = await puppeteer.launch({
     defaultViewport: {
@@ -22,6 +23,8 @@ const renderPdf = async ({
     const docsifyUrl = `http://localhost:${docsifyRendererPort}/#/${pathToStatic}/${mainMdFilenameWithoutExt}`;
 
     const page = await browser.newPage();
+    // Inject $docsify object from package.json based on provided key.
+    await page.evaluateOnNewDocument(x => window.$docsify = x, $docsify[process.argv.slice(2)[0] || "default"]);
     await page.goto(docsifyUrl, { waitUntil: "networkidle0" });
 
     const renderProcessingErrors = await runSandboxScript(page, {
@@ -53,6 +56,7 @@ const htmlToPdf = ({
   removeTemp,
   docsifyRendererPort,
   emulateMedia,
+  $docsify,
 }) => async () => {
   const { closeProcess } = require("./utils.js")({ pathToStatic, removeTemp });
   try {
@@ -63,6 +67,7 @@ const htmlToPdf = ({
       pdfOptions,
       docsifyRendererPort,
       emulateMedia,
+      $docsify,
     });
   } catch (err) {
     logger.err("puppeteer renderer error:", err);
