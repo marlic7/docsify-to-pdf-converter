@@ -43,7 +43,7 @@ const renderPdf = async ({
     if (renderProcessingErrors.length)
       logger.warn("anchors processing errors", renderProcessingErrors);
 
-    await page.emulateMedia(emulateMedia);
+    // await page.emulateMediaType(emulateMedia);
     await page.pdf({
       ...pdfOptions,
       path: path.resolve(pathToPublic),
