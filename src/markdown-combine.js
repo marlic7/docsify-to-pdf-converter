@@ -16,9 +16,17 @@ const combineMarkdowns = ({ contents, pathToStatic, mainMdFilename, pathToDocsif
         const fileExist = await exists(filename);
 
         if (fileExist) {
-          const content = await readFile(filename, {
+          let content = await readFile(filename, {
             encoding: "utf8",
           });
+
+          const includes = content.match(/\[.*?\]\((.*?) '\:include'\)/g) || [];
+          for (const i of includes) {
+            const ma = i.match(/\[.*?\]\((.*?) '\:include'\)/);
+            const fn = path.join(path.dirname(filename), ma[1]);
+            const incContent = await readFile(fn, { encoding: "utf8" });
+            content = content.replace(ma[0], incContent);
+          }
 
           return {
             content,
